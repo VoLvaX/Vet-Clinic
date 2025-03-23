@@ -3,6 +3,7 @@ package main.java.com.magicvet.service;
 import main.java.com.magicvet.Main;
 import main.java.com.magicvet.model.Client;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +12,7 @@ public class Client_service {
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z]{2,}$";
 
 
-    public Client registerNewClient() {
+    public Optional<Client> registerNewClient() {
         Client client = null;
 
         System.out.println("Please provide client details.");
@@ -26,7 +27,7 @@ public class Client_service {
         } else {
             System.out.println("Provided email is invalid.");
         }
-        return client;
+        return Optional.ofNullable(client);
     }
 
     private static Client buildClient(String email) {
@@ -39,6 +40,20 @@ public class Client_service {
         System.out.print("Last name: ");
         client.setSecondName(Main.SCANNER.nextLine());
 
+        System.out.println("Location: " );
+
+        Client.Location location;
+        String locationInput = Main.SCANNER.nextLine();
+
+        try {
+            location = Client.Location.valueOf(locationInput);
+        } catch (IllegalArgumentException e) {
+            location = Client.Location.UNKNOWN;
+            System.out.println("Unable to parse value '" + locationInput
+                    + "'. Using default value: " + Client.Location.UNKNOWN);
+        }
+
+        client.setLocation(location);
         return client;
     }
 
